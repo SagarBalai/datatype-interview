@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import kotlin.test.asserter
 
 internal class NodeTest {
     @Test
@@ -117,5 +118,59 @@ internal class NodeTest {
         assertEquals(100, node.get(5))
         assertEquals(old, node.get(6))
         assertEquals(11, node.length())
+    }
+
+    @Test
+    internal fun `length - should return length with recursive logic`() {
+        // given
+        val node = createLinkedList(25)
+
+        // when
+        val length = node.length(false)
+
+        // then
+        assertEquals(25, length)
+    }
+
+    @Test
+    internal fun `length iterative- should return 0 for deleted linkedlist`() {
+        // given
+        val node = createLinkedList(20)
+        assertEquals(20, node.length())
+        node.delete()
+
+        // when
+        val length = node.length()
+
+        //then
+        assertEquals(0, length)
+
+        // when
+        node.add(12)
+
+        // then
+        assertEquals(1,node.length())
+        assertEquals(12,node.get(0))
+    }
+
+    @Test
+    internal fun `length recursive - should return 0 for deleted linkedlist`() {
+        // given
+        val node = createLinkedList(20)
+        assertEquals(20, node.length(false))
+        node.delete()
+
+        // when
+        val length = node.length(false)
+
+        //then
+        assertEquals(0, length)
+
+        // when
+        node.add(12)
+
+        // then
+        assertEquals(1,node.length(false))
+        assertEquals(12,node.get(0))
     }
 }

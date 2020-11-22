@@ -4,7 +4,19 @@ class Node(private val data: Int) {
     var next: Node? = null
     var head: Node? = this
 
-    fun length(): Int {
+    fun length(itr: Boolean = true): Int {
+        if (itr) {
+            return lengthIterative()
+        } else {
+            return lengthRecursive(head)
+        }
+    }
+
+    private fun lengthRecursive(node: Node?): Int {
+        return if (node == null) return 0 else 1 + lengthRecursive(node.next)
+    }
+
+    private fun lengthIterative(): Int {
         var length = 0
         var temp: Node? = head
         while (temp != null) {
@@ -14,26 +26,40 @@ class Node(private val data: Int) {
         return length
     }
 
-
     fun add(element: Int, atIndex: Int = 0): Boolean {
-        addFirst(element)
+        if (atIndex == 0) {
+            addFirst(element)
+        } else {
+            addElementAtIndex(element, atIndex)
+        }
         return true
     }
 
-     fun addEnd(element: Int) {
-        var temp = head
-        while (temp!!.next !=null){
-            temp = temp!!.next
+    private fun addElementAtIndex(element: Int, atIndex: Int) {
+        var i = 0
+        var node = head
+        while (i < atIndex - 1 && node!!.next != null) {
+            node = node.next
+            i++
         }
-        temp!!.next = Node(element)
+        val temp = node!!.next
+        node.next = Node(element)
+        node.next!!.next = temp
     }
 
-     fun addFirst(element: Int) {
-        val temp = Node(element)
-        if (head == null) {
-            head = temp
+    fun addEnd(element: Int) {
+        var temp = head
+        while (temp!!.next != null) {
+            temp = temp.next
         }
-        temp.next = head
+        temp.next = Node(element)
+    }
+
+    fun addFirst(element: Int) {
+        val temp = Node(element)
+        if (head != null) {
+            temp.next = head
+        }
         head = temp
     }
 
