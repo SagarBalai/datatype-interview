@@ -4,8 +4,8 @@ import com.saggy.linkedlist.singly.factory.SingleLinkedListFactory.Companion.cre
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-import kotlin.test.asserter
 
 internal class NodeTest {
     @Test
@@ -71,6 +71,56 @@ internal class NodeTest {
         // then
         assertEquals("Index $index is not in linked list range", "" + result.message)
     }
+
+    @Test
+    internal fun `get - should get IndexOutOfBound exception when index parameter is negative`() {
+        // given
+        val node = createLinkedList(5)
+
+        // when
+        val result = assertThrows(IndexOutOfBoundsException::class.java) { node.get(-1) }
+
+        // then
+        assertEquals("Index -1 is not in linked list range", "" + result.message)
+    }
+
+    @Test
+    internal fun `get - should get element at index`() {
+        // given
+        val node = createLinkedList(50)
+
+        // when
+        val result =  node.get(25)
+
+        // then
+        assertEquals(25,result)
+    }
+
+    @Test
+    internal fun `get recursive- should get IndexOutOfBound exception when get element at index greater than list length`() {
+        // given
+        val node = createLinkedList(5)
+        val index = node.length() + 1
+
+        // when
+        val result = assertThrows(IndexOutOfBoundsException::class.java) { node.get(index,false) }
+
+        // then
+        assertEquals("Index $index is not in linked list range", "" + result.message)
+    }
+
+    @Test
+    internal fun `get recursive- should get element at index`() {
+        // given
+        val node = createLinkedList(50)
+
+        // when
+        val result =  node.get(25,false)
+
+        // then
+        assertEquals(25,result)
+    }
+
 
     @Test
     internal fun `delete - should return true`() {
@@ -149,8 +199,8 @@ internal class NodeTest {
         node.add(12)
 
         // then
-        assertEquals(1,node.length())
-        assertEquals(12,node.get(0))
+        assertEquals(1, node.length())
+        assertEquals(12, node.get(0))
     }
 
     @Test
@@ -170,7 +220,136 @@ internal class NodeTest {
         node.add(12)
 
         // then
-        assertEquals(1,node.length(false))
-        assertEquals(12,node.get(0))
+        assertEquals(1, node.length(false))
+        assertEquals(12, node.get(0))
     }
+
+    @Test
+    internal fun `exist - should return false if element does not exist in linked list`() {
+        // given
+        val node = createLinkedList(20)
+
+        // when
+        val exist = node.exist(100)
+
+        // then
+        assertFalse(exist)
+    }
+
+    @Test
+    internal fun `exist - should return true if element exist in linked list`() {
+        // given
+        val node = createLinkedList(20)
+
+        // when
+        val exist = node.exist(15)
+
+        // then
+        assertTrue(exist)
+    }
+
+    @Test
+    internal fun `exist recursive - should return false if element does not exist in linked list`() {
+        // given
+        val node = createLinkedList(20)
+
+        // when
+        val exist = node.exist(100, false)
+
+        // then
+        assertFalse(exist)
+    }
+
+    @Test
+    internal fun `exist recursive- should return true if element exist in linked list`() {
+        // given
+        val node = createLinkedList(20)
+
+        // when
+        val exist = node.exist(15)
+
+        // then
+        assertTrue(exist)
+    }
+
+    @Test
+    internal fun `getFromLast - should return second last element when nth node is 2`() {
+        // given
+        val node = createLinkedList(20)
+
+        // when
+        val elem = node.getFromLast(2)
+
+        // then
+        assertEquals(2,elem)
+
+        // when
+        node.add(100)
+
+        // then
+        assertEquals(100,node.getFromLast(21))
+    }
+
+    @Test
+    internal fun `getFromLast - should throw IndexOutOfBound when called with index greater than length`() {
+        // given
+        val node = createLinkedList(20)
+        val index =22
+
+        // when
+        val result = assertThrows(IndexOutOfBoundsException::class.java){ node.getFromLast(22) }
+
+        // then
+        assertEquals("Index $index out of linked list range",result.message)
+    }
+
+    @Test
+    internal fun `print - should return visual representation of linked list`() {
+        // given
+        val node = createLinkedList(10)
+
+        // when
+        val str = node.print()
+
+        // then
+        assertEquals("10->9->8->7->6->5->4->3->2->1->null",str)
+
+        // when
+        node.delete()
+
+        //then
+        assertTrue(node.print().isEmpty())
+    }
+
+    @Test
+    internal fun `getFromLastImproved - should return second last element when nth node is 2`() {
+        // given
+        val node = createLinkedList(20)
+
+        // when
+        val elem = node.getFromLastImproved(2)
+
+        // then
+        assertEquals(2,elem)
+
+        // when
+        node.add(100)
+
+        // then
+        assertEquals(100,node.getFromLastImproved(21))
+    }
+
+    @Test
+    internal fun `getFromLastImproved - should return 1 for one node linked list`() {
+        // given
+        val node = createLinkedList(1)
+
+        // when
+        val elem = node.getFromLastImproved(1)
+
+        // then
+        assertEquals(1,elem)
+    }
+
+
 }
