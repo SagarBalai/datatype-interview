@@ -1,5 +1,7 @@
 package com.saggy.linkedlist.singly
 
+import com.saggy.linkedlist.singly.factory.SingleLinkedListFactory
+import com.saggy.linkedlist.singly.factory.SingleLinkedListFactory.Companion.createLinkedList
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
@@ -21,8 +23,7 @@ internal class NodeTest {
     @Test
     internal fun `length - should return 4 for four node linked list`() {
         // given
-        val node = Node(1)
-        node.next = Node(2)
+        val node = createLinkedList(2)
 
         //when
         val length = node.length()
@@ -48,11 +49,7 @@ internal class NodeTest {
     @Test
     internal fun `get - should get IndexOutOfBound exception when get element at index greater than list length`() {
         // given
-        val node = Node(1)
-        node.add(2)
-        node.add(3)
-        node.add(4)
-        node.add(5)
+        val node = createLinkedList(5)
         val index = node.length() + 1
 
         // when
@@ -65,11 +62,7 @@ internal class NodeTest {
     @Test
     internal fun `delete - should return true`() {
         // given
-        val node = Node(1)
-        node.add(2)
-        node.add(3)
-        node.add(4)
-        node.add(5)
+        val node = createLinkedList(10)
 
         // when
         node.delete()
@@ -77,4 +70,5 @@ internal class NodeTest {
         // then
         assertEquals(0, node.length())
     }
+
 }
