@@ -16,4 +16,18 @@ internal class NodeTest {
         assertEquals(1,length)
     }
 
+    @Test
+    internal fun `length - should return 4 for four node linked list`() {
+        // given
+        val node = Node(1)
+        node.next = Node(2)
+
+        //when
+        val length = node.length()
+
+        //then
+        assertEquals(2,length)
+    }
+
+
 }
