@@ -14,14 +14,27 @@ class Node(private val data: Int) {
         return length
     }
 
-    fun add(element: Int): Boolean {
+
+    fun add(element: Int, atIndex: Int = 0): Boolean {
+        addFirst(element)
+        return true
+    }
+
+     fun addEnd(element: Int) {
+        var temp = head
+        while (temp!!.next !=null){
+            temp = temp!!.next
+        }
+        temp!!.next = Node(element)
+    }
+
+     fun addFirst(element: Int) {
         val temp = Node(element)
         if (head == null) {
             head = temp
         }
         temp.next = head
         head = temp
-        return true
     }
 
     fun delete(): Boolean {

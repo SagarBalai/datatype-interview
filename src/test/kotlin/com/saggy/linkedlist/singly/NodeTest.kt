@@ -1,6 +1,5 @@
 package com.saggy.linkedlist.singly
 
-import com.saggy.linkedlist.singly.factory.SingleLinkedListFactory
 import com.saggy.linkedlist.singly.factory.SingleLinkedListFactory.Companion.createLinkedList
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
@@ -47,6 +46,19 @@ internal class NodeTest {
     }
 
     @Test
+    internal fun `addFirst - should insert element at first position`() {
+        // given
+        val node = createLinkedList(10)
+
+        // when
+        node.addFirst(100)
+
+        // then
+        assertEquals(11, node.length())
+        assertEquals(100, node.get(0))
+    }
+
+    @Test
     internal fun `get - should get IndexOutOfBound exception when get element at index greater than list length`() {
         // given
         val node = createLinkedList(5)
@@ -71,4 +83,39 @@ internal class NodeTest {
         assertEquals(0, node.length())
     }
 
+    @Test
+    internal fun `add - should insert element at the end of linked list`() {
+        // given
+        val node = createLinkedList(5)
+        val len = node.length()
+
+        // when
+        node.addEnd(11)
+
+        // then
+        assertEquals(len + 1, node.length())
+        assertEquals(11, node.get(node.length() - 1))
+
+        // when
+        node.addEnd(21)
+
+        // then
+        assertEquals(len + 2, node.length())
+        assertEquals(21, node.get(len + 1))
+    }
+
+    @Test
+    internal fun `add - should insert element at 5th Index in linkedlist with length 10`() {
+        // given
+        val node = createLinkedList(10)
+        val old = node.get(5)
+
+        //when
+        node.add(100, 5)
+
+        // then
+        assertEquals(100, node.get(5))
+        assertEquals(old, node.get(6))
+        assertEquals(11, node.length())
+    }
 }
