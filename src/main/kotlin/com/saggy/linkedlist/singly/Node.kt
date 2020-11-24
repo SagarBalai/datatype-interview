@@ -1,8 +1,8 @@
 package com.saggy.linkedlist.singly
 
 class Node(private val data: Int) {
-    private var next: Node? = null
-    private var head: Node? = this
+    var next: Node? = null
+    var head: Node? = this
 
     /**
      * Time complexity :O(n)
@@ -147,7 +147,6 @@ class Node(private val data: Int) {
      *  Time complexity : O(n)
      */
     fun exist(element: Int, itr: Boolean = true): Boolean {
-
         return if (itr) {
             existItr(element)
         } else {
@@ -178,7 +177,7 @@ class Node(private val data: Int) {
      *   Time complexity : length() is O(n) + get() is O(n)  == O(n)
      *   but this can be improved with single iteration with another pointer
      */
-    fun getFromLast(position: Int): Int {
+    fun getFromLastTwoIteration(position: Int): Int {
         val length = length()
         if (position > length) {
             throw IndexOutOfBoundsException("Index $position out of linked list range")
@@ -189,7 +188,7 @@ class Node(private val data: Int) {
     /***
      *   Time complexity :O(n) -- With two pointers, can be found in one iteration
      */
-    fun getFromLastImproved(position: Int): Int {
+    fun getFromLast(position: Int): Int {
         var i = 1
         var temp = head
         var nthNode: Node? = null
@@ -197,14 +196,14 @@ class Node(private val data: Int) {
         while (temp != null) {
             if (i >= position) {
                 nthNode = if (nthNode == null) head
-                else{
-                    nthNode!!.next
+                else {
+                    nthNode.next
                 }
             }
             temp = temp.next
             i++
         }
-        if(nthNode == null){
+        if (nthNode == null) {
             throw IndexOutOfBoundsException("Index $position out of linked list range")
         }
         return nthNode.data
@@ -223,4 +222,95 @@ class Node(private val data: Int) {
         if (sb.isNotEmpty()) sb.append("null")
         return sb.toString()
     }
+
+    /**
+     * find middle element using length of linked list.
+     * Time complexity : O(n)
+     * but it needs two separate iteration one for length and one to find middle O(n)+O(n).
+     */
+    fun middleWithTwoIteration(): Int {
+        val length = length()
+        var i = 0
+        var middle = head
+        while (i < length / 2) {
+            middle = middle!!.next
+            i++
+        }
+        return middle!!.data
+    }
+
+    fun middle(): Int {
+        var middle = head!!
+        var temp = head
+
+        while (temp!!.next != null && temp.next!!.next != null) {
+            middle = middle.next!!
+            temp = temp.next!!.next
+        }
+        return middle.data
+    }
+
+    fun findOccurance(element: Int): Int {
+        var count = 0
+        var temp = head
+
+        while (temp != null) {
+            if (temp.data == element) {
+                count++
+            }
+            temp = temp.next
+        }
+        return count
+    }
+
+    /**
+     * This is optimal approach to detect loop in linked list
+     * Time Complexity: O(n)
+     * Other approach is with hashing
+     * Use ```HashSet``` to store Node and then check is it getting duplicated :: Time complexity O(n) as need single traversal but it needs extra space to store node data so Auxiliary space : O(n)
+     */
+    fun isLoopPresent(): Boolean {
+        var loop = false
+        var slowPtr = head
+        var fastPtr = head
+
+        while (slowPtr?.next != null
+            && fastPtr?.next != null && fastPtr.next!!.next != null
+        ) {
+            slowPtr = slowPtr.next
+            fastPtr = fastPtr.next!!.next
+            if (slowPtr == fastPtr) {
+                loop = true
+                break
+            }
+        }
+        return loop
+    }
+
+    /**
+     * Time Complexity: O(n)
+     */
+    fun loopLength(): Int {
+        var slowPtr = head
+        var fastPtr = head
+        var loop = false
+        while (!(slowPtr?.next == null || fastPtr?.next == null || fastPtr.next!!.next == null)
+        ) {
+            slowPtr = slowPtr.next
+            fastPtr = fastPtr.next!!.next
+            if (slowPtr == fastPtr) {
+                loop= true
+                break
+            }
+        }
+        var length = 1
+        slowPtr =slowPtr!!.next
+        while (loop && slowPtr != fastPtr) {
+            length++
+            slowPtr = slowPtr!!.next
+        }
+        return length
+    }
+
+
 }

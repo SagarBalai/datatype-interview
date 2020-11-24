@@ -90,10 +90,10 @@ internal class NodeTest {
         val node = createLinkedList(50)
 
         // when
-        val result =  node.get(25)
+        val result = node.get(25)
 
         // then
-        assertEquals(25,result)
+        assertEquals(25, result)
     }
 
     @Test
@@ -103,7 +103,7 @@ internal class NodeTest {
         val index = node.length() + 1
 
         // when
-        val result = assertThrows(IndexOutOfBoundsException::class.java) { node.get(index,false) }
+        val result = assertThrows(IndexOutOfBoundsException::class.java) { node.get(index, false) }
 
         // then
         assertEquals("Index $index is not in linked list range", "" + result.message)
@@ -115,10 +115,10 @@ internal class NodeTest {
         val node = createLinkedList(50)
 
         // when
-        val result =  node.get(25,false)
+        val result = node.get(25, false)
 
         // then
-        assertEquals(25,result)
+        assertEquals(25, result)
     }
 
 
@@ -273,34 +273,34 @@ internal class NodeTest {
     }
 
     @Test
-    internal fun `getFromLast - should return second last element when nth node is 2`() {
+    internal fun `getFromLastTwoIteration - should return second last element when nth node is 2`() {
         // given
         val node = createLinkedList(20)
 
         // when
-        val elem = node.getFromLast(2)
+        val elem = node.getFromLastTwoIteration(2)
 
         // then
-        assertEquals(2,elem)
+        assertEquals(2, elem)
 
         // when
         node.add(100)
 
         // then
-        assertEquals(100,node.getFromLast(21))
+        assertEquals(100, node.getFromLastTwoIteration(21))
     }
 
     @Test
-    internal fun `getFromLast - should throw IndexOutOfBound when called with index greater than length`() {
+    internal fun `getFromLastTwoIteration - should throw IndexOutOfBound when called with index greater than length`() {
         // given
         val node = createLinkedList(20)
-        val index =22
+        val index = 22
 
         // when
-        val result = assertThrows(IndexOutOfBoundsException::class.java){ node.getFromLast(22) }
+        val result = assertThrows(IndexOutOfBoundsException::class.java) { node.getFromLastTwoIteration(22) }
 
         // then
-        assertEquals("Index $index out of linked list range",result.message)
+        assertEquals("Index $index out of linked list range", result.message)
     }
 
     @Test
@@ -312,7 +312,7 @@ internal class NodeTest {
         val str = node.print()
 
         // then
-        assertEquals("10->9->8->7->6->5->4->3->2->1->null",str)
+        assertEquals("10->9->8->7->6->5->4->3->2->1->null", str)
 
         // when
         node.delete()
@@ -322,34 +322,168 @@ internal class NodeTest {
     }
 
     @Test
-    internal fun `getFromLastImproved - should return second last element when nth node is 2`() {
+    internal fun `getFromLast - should return second last element when nth node is 2`() {
         // given
         val node = createLinkedList(20)
 
         // when
-        val elem = node.getFromLastImproved(2)
+        val elem = node.getFromLast(2)
 
         // then
-        assertEquals(2,elem)
+        assertEquals(2, elem)
 
         // when
         node.add(100)
 
         // then
-        assertEquals(100,node.getFromLastImproved(21))
+        assertEquals(100, node.getFromLast(21))
     }
 
     @Test
-    internal fun `getFromLastImproved - should return 1 for one node linked list`() {
+    internal fun `getFromLast - should return 1 for one node linked list`() {
         // given
         val node = createLinkedList(1)
 
         // when
-        val elem = node.getFromLastImproved(1)
+        val elem = node.getFromLast(1)
 
         // then
-        assertEquals(1,elem)
+        assertEquals(1, elem)
     }
 
+    @Test
+    internal fun `middleWithTwoIteration - should return first element for single node linked list`() {
+        // given
+        val node = createLinkedList(1)
+
+        // when
+        val middle = node.middleWithTwoIteration()
+
+        // then
+        assertEquals(1, middle)
+    }
+
+    @Test
+    internal fun `middleWithTwoIteration - should return middle element`() {
+        // given
+        val node = createLinkedList(5)
+
+        // when
+        val middle = node.middleWithTwoIteration()
+
+        // then
+        assertEquals(3, middle)
+    }
+
+    @Test
+    internal fun `middle - should return first element for single node linked list`() {
+        // given
+        val node = createLinkedList(1)
+
+        // when
+        val middle = node.middle()
+
+        // then
+        assertEquals(1, middle)
+    }
+
+    @Test
+    internal fun `middle - should return middle element`() {
+        // given
+        val node = createLinkedList(5)
+
+        // when
+        val middle = node.middle()
+
+        // then
+        assertEquals(3, middle)
+    }
+
+    @Test
+    internal fun `middle - should return middle element for even node linked list`() {
+        // given
+        val node = createLinkedList(6)
+
+        // when
+        val middle = node.middle()
+
+        // then
+        assertEquals(4, middle)
+    }
+
+    @Test
+    internal fun `findOccurrence - should return zero when element is not present`() {
+        // given
+        val node = createLinkedList(10)
+
+        // when
+        val count = node.findOccurance(20)
+
+        // then
+        assertEquals(0, count)
+    }
+
+    @Test
+    internal fun `findOccurrence - should return five when element is present five times`() {
+        // given
+        val node = createLinkedList(10)
+        node.add(5)
+        node.add(5)
+        node.add(5)
+        node.add(5)
+
+        // when
+        val count = node.findOccurance(5)
+
+        // then
+        assertEquals(5, count)
+    }
+
+    @Test
+    internal fun `isLoopPresent - should return false for single node linked list`() {
+        // given
+        val node = Node(1)
+
+        // when
+        val loopPresent = node.isLoopPresent()
+
+        // then
+        assertFalse(loopPresent)
+    }
+
+    @Test
+    internal fun `isLoopPresent - should return true for linked list with loop`() {
+        // given
+        val node = createLinkedList(5)
+        node.head!!.next!!.next!!.next!!.next!!.next=node.head
+
+        // when
+        val loopPresent = node.isLoopPresent()
+
+        // then
+        assertTrue(loopPresent)
+    }
+
+    @Test
+    internal fun `loopLength - should return 0`() {
+    // given
+        val node = createLinkedList(10)
+
+        // when & then
+        assertEquals(0,node.loopLength())
+    }
+
+    @Test
+    internal fun `loopLength - should return true for linked list with loop`() {
+        // given
+        val node = createLinkedList(5)
+        node.head!!.next!!.next!!.next!!.next!!.next=node.head
+
+        // when
+        val length = node.loopLength()
+
+        // then
+        assertEquals(5,length)
+    }
 
 }
