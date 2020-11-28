@@ -299,17 +299,82 @@ class Node(private val data: Int) {
             slowPtr = slowPtr.next
             fastPtr = fastPtr.next!!.next
             if (slowPtr == fastPtr) {
-                loop= true
+                loop = true
                 break
             }
         }
-        var length = 1
-        slowPtr =slowPtr!!.next
+        var length = if (loop) 1 else 0
+        slowPtr = slowPtr!!.next
         while (loop && slowPtr != fastPtr) {
             length++
             slowPtr = slowPtr!!.next
         }
         return length
+    }
+
+    /**
+     * There are multiple ways to find palindrome in linked list as below
+     * 1. Simple solution is two have extra pointer in Node ie prev and then with two nodes (start, last) can be done in O(n)
+     * 2. With help of STACK. While iterating till middle element, push to stack and after middle pop and check. Both needs to be same. Can be done in O(n) but need extra space O(n/2)~O(n)
+     * 3. Reversing complete linked list and checking both one
+     * 4. Reversing only second half and then with start and middle pointer, cab be done in O(n) and once done again reverse second half to preserve original list.
+     *
+     * So here we implement without any additional data structure, will implement 4
+     */
+    fun isPalindrome(): Boolean {
+        // 1->2->3->4->5->6->7->null
+
+        val length = length()
+        var middlePrevNode :Node? =null
+
+        for(i in 0 until length/2){
+            middlePrevNode =if(middlePrevNode==null) head else middlePrevNode.next
+        }
+        if(length%2 !=0){
+            middlePrevNode=middlePrevNode!!.next
+        }
+        var prev: Node? = reverseCur(middlePrevNode!!.next)
+        var temp= head
+        middlePrevNode.next=prev
+
+        var isPalindrome = true
+        while (prev != null){
+            if(temp!!.data!= prev.data){
+                isPalindrome = false
+                break;
+            }
+            prev=prev.next
+            temp=temp.next
+        }
+        middlePrevNode.next = reverseCur(middlePrevNode.next)
+        return isPalindrome
+    }
+
+    private fun reverseCur(node: Node?): Node? {
+        var cur = node
+        var prev: Node? = null
+
+        while (cur != null) {
+            val next = cur.next
+            cur.next = prev
+            prev = cur
+            cur = next
+        }
+        return prev
+    }
+
+    fun reverse(): Node {
+        var prev: Node? = null
+        var cur = head
+
+        while (cur != null) {
+            val next = cur.next
+            cur.next = prev
+            prev = cur
+            cur = next
+        }
+        head = prev
+        return head!!
     }
 
 

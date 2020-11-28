@@ -1,6 +1,7 @@
 package com.saggy.linkedlist.singly
 
 import com.saggy.linkedlist.singly.factory.SingleLinkedListFactory.Companion.createLinkedList
+import com.saggy.linkedlist.singly.factory.SingleLinkedListFactory.Companion.createLoopLinkedList
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import kotlin.test.assertEquals
@@ -454,8 +455,7 @@ internal class NodeTest {
     @Test
     internal fun `isLoopPresent - should return true for linked list with loop`() {
         // given
-        val node = createLinkedList(5)
-        node.head!!.next!!.next!!.next!!.next!!.next=node.head
+        val node = createLoopLinkedList(5, 0)
 
         // when
         val loopPresent = node.isLoopPresent()
@@ -466,24 +466,110 @@ internal class NodeTest {
 
     @Test
     internal fun `loopLength - should return 0`() {
-    // given
+        // given
         val node = createLinkedList(10)
 
         // when & then
-        assertEquals(0,node.loopLength())
+        assertEquals(0, node.loopLength())
     }
 
     @Test
     internal fun `loopLength - should return true for linked list with loop`() {
         // given
-        val node = createLinkedList(5)
-        node.head!!.next!!.next!!.next!!.next!!.next=node.head
+        val node = createLoopLinkedList(5, 0)
 
         // when
         val length = node.loopLength()
 
         // then
-        assertEquals(5,length)
+        assertEquals(5, length)
     }
 
+    @Test
+    internal fun `isPalindrome - should return false for linked list without duplicate node data`() {
+        // given
+        val node = createLinkedList(10)
+
+        // when
+        val isPalindrome = node.isPalindrome()
+
+        // then
+        assertFalse(isPalindrome)
+    }
+
+    @Test
+    internal fun `isPalindrome - should return true for even count palindrome linked list`() {
+        // given
+        val node = createLinkedList(3,true)
+        node.addEnd(3)
+        node.addEnd(2)
+        node.addEnd(1)
+
+        // when
+        val isPalindrome = node.isPalindrome()
+
+        // then
+        assertTrue(isPalindrome)
+    }
+
+    @Test
+    internal fun `isPalindrome - should return true for odd count palindrome linked list`() {
+        // given
+        val node = createLinkedList(3,true)
+        node.addEnd(2)
+        node.addEnd(1)
+        val nodeStr = node.print()
+
+        // when
+        val isPalindrome = node.isPalindrome()
+
+        // then
+        assertTrue(isPalindrome)
+        assertEquals(nodeStr,node.print())
+    }
+
+    @Test
+    internal fun `isPalindrome - should return false for odd count palindrome linked list`() {
+        // given
+        val node = createLinkedList(3,true)
+        node.addEnd(1)
+        node.addEnd(2)
+        val nodeStr = node.print()
+        println(nodeStr)
+
+        // when
+        val isPalindrome = node.isPalindrome()
+
+        // then
+        assertFalse(isPalindrome)
+        assertEquals(nodeStr,node.print())
+    }
+
+
+    @Test
+    internal fun `reverse - should return same linked list for single node`() {
+        // given
+        val node = createLinkedList(1)
+
+        // when
+        val reverse = node.reverse()
+
+        // then
+        assertEquals(node, reverse)
+    }
+
+    @Test
+    internal fun `reverse - should reverse linked list`() {
+        // given
+        val node = createLinkedList(10)
+
+        // when
+        val reverse = node.reverse()
+
+        // then
+        val originalNode = createLinkedList(10) // this can be replaced with clone node in given after clone implementation
+        for (i in 0 until  10){
+            assertEquals(originalNode.get(i),reverse.get(9-i))
+        }
+    }
 }
