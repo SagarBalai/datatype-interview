@@ -500,7 +500,7 @@ internal class NodeTest {
     @Test
     internal fun `isPalindrome - should return true for even count palindrome linked list`() {
         // given
-        val node = createLinkedList(3,true)
+        val node = createLinkedList(3, true)
         node.addEnd(3)
         node.addEnd(2)
         node.addEnd(1)
@@ -515,7 +515,7 @@ internal class NodeTest {
     @Test
     internal fun `isPalindrome - should return true for odd count palindrome linked list`() {
         // given
-        val node = createLinkedList(3,true)
+        val node = createLinkedList(3, true)
         node.addEnd(2)
         node.addEnd(1)
         val nodeStr = node.print()
@@ -525,13 +525,13 @@ internal class NodeTest {
 
         // then
         assertTrue(isPalindrome)
-        assertEquals(nodeStr,node.print())
+        assertEquals(nodeStr, node.print())
     }
 
     @Test
     internal fun `isPalindrome - should return false for odd count palindrome linked list`() {
         // given
-        val node = createLinkedList(3,true)
+        val node = createLinkedList(3, true)
         node.addEnd(1)
         node.addEnd(2)
         val nodeStr = node.print()
@@ -542,7 +542,7 @@ internal class NodeTest {
 
         // then
         assertFalse(isPalindrome)
-        assertEquals(nodeStr,node.print())
+        assertEquals(nodeStr, node.print())
     }
 
 
@@ -567,9 +567,52 @@ internal class NodeTest {
         val reverse = node.reverse()
 
         // then
-        val originalNode = createLinkedList(10) // this can be replaced with clone node in given after clone implementation
-        for (i in 0 until  10){
-            assertEquals(originalNode.get(i),reverse.get(9-i))
+        val originalNode =
+            createLinkedList(10) // this can be replaced with clone node in given after clone implementation
+        for (i in 0 until 10) {
+            assertEquals(originalNode.get(i), reverse.get(9 - i))
         }
+    }
+
+    @Test
+    internal fun `sort - should sort linked list`() {
+        // given
+        val node = createLinkedList(5)
+
+        // when
+        node.mergeSort(true)
+
+        // then
+        assertEquals("1->2->3->4->5->null", node.print())
+    }
+
+    @Test
+    internal fun `sort - should sort`() {
+        // given
+        val node = createLinkedList(2)
+        node.add(15);node.add(21)
+        node.add(463);node.add(42)
+        node.add(32)
+        println(node.print())
+
+        // when
+        node.mergeSort()
+        assertEquals("1->2->15->21->32->42->463->null", node.print())
+    }
+
+    @Test
+    internal fun `sort - should sort linked list with random numbers`() {
+        // given
+        val node = createLinkedList(2)
+        node.add(32); node.add(15)
+        node.add(21); node.add(463)
+        node.add(42);node.add(11)
+        node.add(25);node.add(16)
+
+        // when
+        node.mergeSort()
+
+        // then
+        assertEquals("1->2->11->15->16->21->25->32->42->463->null", node.print())
     }
 }

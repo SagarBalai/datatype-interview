@@ -4,11 +4,11 @@ import com.saggy.linkedlist.singly.Node
 
 class SingleLinkedListFactory {
     companion object {
-        fun createLinkedList(count: Int, lowToHigh: Boolean = false): Node {
+        fun createLinkedList(count: Int, ascending: Boolean = false): Node {
             if (count < 0) {
                 throw RuntimeException("count can not be negative")
             }
-            return if (lowToHigh) {
+            return if (ascending) {
                 val node = Node(count)
                 for (i in count-1 downTo 1 ){
                     node.add(i)

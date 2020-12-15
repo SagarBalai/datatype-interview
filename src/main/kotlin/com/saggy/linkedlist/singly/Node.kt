@@ -239,15 +239,17 @@ class Node(private val data: Int) {
         return middle!!.data
     }
 
-    fun middle(): Int {
-        var middle = head!!
-        var temp = head
+    fun middle() =  middleNode().data
 
-        while (temp!!.next != null && temp.next!!.next != null) {
+    private fun middleNode(node: Node=head!!): Node {
+        var middle = node
+        var temp = node
+
+        while (temp.next != null && temp.next!!.next != null) {
             middle = middle.next!!
-            temp = temp.next!!.next
+            temp = temp.next!!.next!!
         }
-        return middle.data
+        return middle
     }
 
     fun findOccurance(element: Int): Int {
@@ -325,26 +327,26 @@ class Node(private val data: Int) {
         // 1->2->3->4->5->6->7->null
 
         val length = length()
-        var middlePrevNode :Node? =null
+        var middlePrevNode: Node? = null
 
-        for(i in 0 until length/2){
-            middlePrevNode =if(middlePrevNode==null) head else middlePrevNode.next
+        for (i in 0 until length / 2) {
+            middlePrevNode = if (middlePrevNode == null) head else middlePrevNode.next
         }
-        if(length%2 !=0){
-            middlePrevNode=middlePrevNode!!.next
+        if (length % 2 != 0) {
+            middlePrevNode = middlePrevNode!!.next
         }
         var prev: Node? = reverseCur(middlePrevNode!!.next)
-        var temp= head
-        middlePrevNode.next=prev
+        var temp = head
+        middlePrevNode.next = prev
 
         var isPalindrome = true
-        while (prev != null){
-            if(temp!!.data!= prev.data){
+        while (prev != null) {
+            if (temp!!.data != prev.data) {
                 isPalindrome = false
-                break;
+                break
             }
-            prev=prev.next
-            temp=temp.next
+            prev = prev.next
+            temp = temp.next
         }
         middlePrevNode.next = reverseCur(middlePrevNode.next)
         return isPalindrome
@@ -377,5 +379,35 @@ class Node(private val data: Int) {
         return head!!
     }
 
+    fun mergeSort(ascending: Boolean= true) {
+        head = mergeSortRec(head)
+    }
+
+    private fun mergeSortRec(node: Node?): Node? {
+        if (node?.next == null) {
+            return node
+        }
+        val middle = middleNode(node)
+        val middleNext = middle.next
+        middle.next = null
+
+        val first = mergeSortRec(node)
+        val second = mergeSortRec(middleNext)
+        return mergeList(first,second)
+    }
+
+
+    private fun mergeList(node1: Node?, node2: Node?): Node? {
+        if(node1==null) return node2
+        if(node2==null) return node1
+
+        return if (node1.data<node2.data){
+            node1.next=mergeList(node1.next,node2)
+            node1
+        } else{
+            node2.next=mergeList(node1,node2.next)
+            node2
+        }
+    }
 
 }
