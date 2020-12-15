@@ -575,7 +575,7 @@ internal class NodeTest {
     }
 
     @Test
-    internal fun `sort - should sort linked list`() {
+    internal fun `sort - should sort complete descending linked list`() {
         // given
         val node = createLinkedList(5)
 
@@ -584,6 +584,19 @@ internal class NodeTest {
 
         // then
         assertEquals("1->2->3->4->5->null", node.print())
+    }
+
+    @Test
+    internal fun `sort - should return same linked list for already ascending sorted linked list`() {
+        // given
+        val node = createLinkedList(5,true)
+        val nodeStr = node.print()
+
+        // when
+        node.mergeSort(true)
+
+        // then
+        assertEquals(nodeStr, node.print())
     }
 
     @Test
@@ -608,11 +621,46 @@ internal class NodeTest {
         node.add(21); node.add(463)
         node.add(42);node.add(11)
         node.add(25);node.add(16)
+        node.add(25);node.add(16)
+        node.add(25);node.add(16)
+        node.add(25);node.add(16)
 
         // when
         node.mergeSort()
 
         // then
-        assertEquals("1->2->11->15->16->21->25->32->42->463->null", node.print())
+        assertEquals("1->2->11->15->16->16->16->16->21->25->25->25->25->32->42->463->null", node.print())
+    }
+
+    @Test
+    internal fun `sort - should return descending sorted linked list`() {
+        // given
+        val node = createLinkedList(5)
+        val nodeStr = node.print()
+
+        // when
+        node.mergeSort(false)
+
+        // then
+        assertEquals(nodeStr, node.print())
+    }
+
+    @Test
+    internal fun `sort - should sort linked list in descending order with random numbers`() {
+        // given
+        val node = createLinkedList(2)
+        node.add(32); node.add(15)
+        node.add(21); node.add(463)
+        node.add(42);node.add(11)
+        node.add(25);node.add(16)
+        node.add(25);node.add(16)
+        node.add(25);node.add(16)
+        node.add(25);node.add(16)
+
+        // when
+        node.mergeSort(false)
+
+        // then
+        assertEquals("463->42->32->25->25->25->25->21->16->16->16->16->15->11->2->1->null", node.print())
     }
 }

@@ -239,9 +239,9 @@ class Node(private val data: Int) {
         return middle!!.data
     }
 
-    fun middle() =  middleNode().data
+    fun middle() = middleNode().data
 
-    private fun middleNode(node: Node=head!!): Node {
+    private fun middleNode(node: Node = head!!): Node {
         var middle = node
         var temp = node
 
@@ -379,11 +379,11 @@ class Node(private val data: Int) {
         return head!!
     }
 
-    fun mergeSort(ascending: Boolean= true) {
-        head = mergeSortRec(head)
+    fun mergeSort(ascending: Boolean = true) {
+        head = mergeSortRec(head, ascending)
     }
 
-    private fun mergeSortRec(node: Node?): Node? {
+    private fun mergeSortRec(node: Node?, ascending: Boolean): Node? {
         if (node?.next == null) {
             return node
         }
@@ -391,22 +391,36 @@ class Node(private val data: Int) {
         val middleNext = middle.next
         middle.next = null
 
-        val first = mergeSortRec(node)
-        val second = mergeSortRec(middleNext)
-        return mergeList(first,second)
+        val first = mergeSortRec(node, ascending)
+        val second = mergeSortRec(middleNext, ascending)
+        return mergeList(first, second, ascending)
     }
 
 
-    private fun mergeList(node1: Node?, node2: Node?): Node? {
-        if(node1==null) return node2
-        if(node2==null) return node1
+    private fun mergeList(
+        node1: Node?,
+        node2: Node?,
+        ascending: Boolean
+    ): Node? {
+        if (node1 == null) return node2
+        if (node2 == null) return node1
 
-        return if (node1.data<node2.data){
-            node1.next=mergeList(node1.next,node2)
-            node1
-        } else{
-            node2.next=mergeList(node1,node2.next)
-            node2
+        if (ascending) {
+            return if (node1.data < node2.data) {
+                node1.next = mergeList(node1.next, node2, ascending)
+                node1
+            } else {
+                node2.next = mergeList(node1, node2.next, ascending)
+                node2
+            }
+        } else {
+            return if (node1.data > node2.data) {
+                node1.next = mergeList(node1.next, node2, ascending)
+                node1
+            } else {
+                node2.next = mergeList(node1, node2.next, ascending)
+                node2
+            }
         }
     }
 
