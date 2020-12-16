@@ -324,8 +324,6 @@ class Node(private val data: Int) {
      * So here we implement without any additional data structure, will implement 4
      */
     fun isPalindrome(): Boolean {
-        // 1->2->3->4->5->6->7->null
-
         val length = length()
         var middlePrevNode: Node? = null
 
@@ -422,6 +420,108 @@ class Node(private val data: Int) {
                 node2
             }
         }
+    }
+
+    /**
+     * It will remove duplicates in sorted linked list.
+     * It needs full iteration over list, Time Complexity: O(n) but as sorted list is pre-requisite
+     * so with merge sort time complexity is O(nLogn)
+     */
+    fun removeDuplicateInSortedList() {
+        var result = head
+        var temp = head!!.next
+        while (temp != null) {
+            if (result!!.data != temp.data) {
+                result.next = temp
+                result = result.next
+            }
+            temp = temp.next
+        }
+        result!!.next = null
+    }
+
+    /**
+     * There are multiple ways to remove duplicates
+     * 1. Using two loops
+     *    For each element in list, iterate complete list to find out whether it is present or not.
+     *    This can be optimized with searching element from next index in list but still time complexity is O(n2)
+     * 2. with Sorting : Sort list first and then use removeDuplicateInSortedList to remove duplicates, Time complexity: O(nLogn)+O(n) ==> O(nLogn)
+     * 3. Using Hash -- Need single iteration so Time Complexity : O(n) but need additional space
+     *    to store distinct elements so space complexity can be O(n) for list with all distinct elements.
+     *
+     * Below implementation is using Hash method.
+     */
+    fun removeDuplicateInUnSortedList() {
+        val set = mutableSetOf<Int>()
+        var result = head!!
+        set.add(result.data)
+        var temp = result.next
+        while (temp != null) {
+            if (!set.contains(temp.data)) {
+                result.next = temp
+                result = result.next!!
+            }
+            set.add(temp.data)
+            temp = temp.next
+        }
+        result.next = null
+    }
+
+    fun swapNode(firstIndex: Int, secIndex: Int) {
+        val minIndex = if(firstIndex < secIndex) firstIndex else secIndex
+        if(minIndex<0){
+            throw Exception("Bad request")
+        }
+
+        val maxIndex = if(firstIndex > secIndex) firstIndex else secIndex
+
+        var temp = head
+        var i = 0
+
+        var prev1:Node? = null
+        while (minIndex !=0 && temp != null ) {
+            if(minIndex==i){
+                break
+            }
+            i++
+            prev1 = temp
+            temp = temp.next
+        }
+
+        if(minIndex>i){
+            throw Exception("Bad request")
+        }
+
+        // this is added here to handle input (length+n,length+m) .. n,m can be any positive number
+        // If we are sure that inputs are always proper means within list range then this can be first validation in behavior.
+        // As out of range length can be handled in last condition, we are sure at least minIndex is in list range (0..listLength)
+        if(firstIndex == secIndex){
+            return
+        }
+
+        var prev2:Node? = null
+        while (temp != null){
+            if(maxIndex ==i){
+                break
+            }
+            i++
+            prev2 = temp
+            temp= temp.next
+        }
+
+        if(maxIndex >i){
+            throw Exception("Bad request")
+        }
+
+        val first = if(prev1==null) head else prev1.next
+        val second = prev2!!.next
+
+        if(prev1 == null) head= second else prev1.next= second
+        prev2.next= first
+
+        val next1 = first!!.next
+        first.next = second!!.next
+        second.next = next1
     }
 
 }

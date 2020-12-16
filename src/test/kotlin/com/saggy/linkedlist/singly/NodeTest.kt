@@ -4,9 +4,12 @@ import com.saggy.linkedlist.singly.factory.SingleLinkedListFactory.Companion.cre
 import com.saggy.linkedlist.singly.factory.SingleLinkedListFactory.Companion.createLoopLinkedList
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.params.ParameterizedTest
+import org.junit.jupiter.params.provider.CsvSource
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+
 
 internal class NodeTest {
     @Test
@@ -589,7 +592,7 @@ internal class NodeTest {
     @Test
     internal fun `sort - should return same linked list for already ascending sorted linked list`() {
         // given
-        val node = createLinkedList(5,true)
+        val node = createLinkedList(5, true)
         val nodeStr = node.print()
 
         // when
@@ -662,5 +665,186 @@ internal class NodeTest {
 
         // then
         assertEquals("463->42->32->25->25->25->25->21->16->16->16->16->15->11->2->1->null", node.print())
+    }
+
+    @Test
+    internal fun `removeDuplicateInSortedList - should return single node linked list for same element`() {
+        // given
+        val node = createLinkedList(1)
+        node.mergeSort()
+
+        // when
+        node.removeDuplicateInSortedList()
+
+        // then
+        assertEquals("1->null", node.print())
+
+        // given
+        for (i in 0..10) {
+            node.add(1)
+        }
+
+        // when
+        node.removeDuplicateInSortedList()
+
+        // then
+        assertEquals("1->null", node.print())
+    }
+
+    @Test
+    internal fun `removeDuplicateInSortedList - should return same linked list with distinct elements`() {
+        // given
+        val node = createLinkedList(5)
+
+        //when
+        node.removeDuplicateInSortedList()
+
+        //then
+        assertEquals(5, node.length())
+        assertEquals("5->4->3->2->1->null", node.print())
+
+        // when
+        node.add(1, 4)
+        node.add(1, 4)
+        node.add(1, 4)
+        node.add(2, 3)
+        node.add(2, 3)
+        node.add(3, 2)
+        node.add(3, 2)
+        node.add(5);node.add(5)
+        node.add(5);node.add(5)
+        node.add(5);node.add(5)
+        node.add(5);node.add(5)
+        assertTrue(node.length() > 10)
+
+        node.removeDuplicateInSortedList()
+
+        // then
+        assertEquals(5, node.length())
+        assertEquals("5->4->3->2->1->null", node.print())
+    }
+
+    @Test
+    internal fun `removeDuplicateInUnSortedList - should return original linked list`() {
+        // given
+        val node = createLinkedList(10)
+        val nodeStr = node.print()
+
+        // when
+        node.removeDuplicateInUnSortedList()
+
+        // then
+        assertEquals(nodeStr, node.print())
+        assertEquals(10, node.length())
+    }
+
+    @Test
+    internal fun `removeDuplicateInUnSortedList - multiple scenarios`() {
+        // given
+        val node = createLinkedList(10)
+        val nodeStr = node.print()
+        node.addEnd(2);node.addEnd(2)
+        node.addEnd(3);node.addEnd(4)
+        node.addEnd(5);node.addEnd(2)
+        node.addEnd(6);node.addEnd(5)
+        node.addEnd(7);node.addEnd(8)
+
+        // when
+        node.removeDuplicateInUnSortedList()
+
+        // then
+        assertEquals(nodeStr, node.print())
+        assertEquals(10, node.length())
+
+        // when
+        node.add(15)
+        node.removeDuplicateInUnSortedList()
+
+        // then
+        assertEquals(11, node.length())
+        assertEquals("15->$nodeStr", node.print())
+
+        // when
+        node.add(5,6)
+        node.add(8,8)
+        node.add(9,8)
+        node.add(35)
+        node.removeDuplicateInUnSortedList()
+
+        // then
+        assertEquals(12, node.length())
+        assertEquals("35->15->$nodeStr", node.print())
+    }
+
+    @Test
+    internal fun `swap - should swap elements`() {
+        // given
+        val node = createLinkedList(2)
+        val length = node.length()
+
+        // when
+        node.swapNode(0,1)
+
+        // then
+        assertEquals(length, node.length())
+        assertEquals("1->2->null",node.print())
+    }
+
+    @Test
+    internal fun `swap - should swap elements for single node list`() {
+        // given
+        val node = createLinkedList(1)
+        val length = node.length()
+
+        // when
+        node.swapNode(0,0)
+
+        // then
+        assertEquals(length, node.length())
+        assertEquals("1->null",node.print())
+    }
+
+    @Test
+    internal fun `swap - multiple scenarios`() {
+        // given
+        val node = createLinkedList(5)
+        val nodeStr = node.print()
+
+        // when
+        node.swapNode(2,2)
+
+        // then
+        assertEquals(nodeStr,node.print())
+
+        // when
+        node.swapNode(0,1)
+
+        // then
+        assertEquals("4->5->3->2->1->null",node.print())
+
+        // when
+        node.swapNode(3,4)
+
+        // then
+        assertEquals("4->5->3->1->2->null",node.print())
+    }
+
+
+    @ParameterizedTest
+    @CsvSource("1,10", "10,1", "-1,3","3,-1","10,10")
+    fun `swap - should throw Bad request exception for all bad inputs, negatiive scenarios `(
+        firstIndex: Int,
+        secIndex: Int
+    ) {
+        // given
+        val node = createLinkedList(5)
+
+        // when
+        val result =assertThrows(Exception::class.java){
+            node.swapNode(firstIndex, secIndex)
+        }
+
+        // then
+        assertEquals("Bad request",result.message)
     }
 }
