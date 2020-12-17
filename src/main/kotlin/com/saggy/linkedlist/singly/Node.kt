@@ -468,19 +468,19 @@ class Node(private val data: Int) {
     }
 
     fun swapNode(firstIndex: Int, secIndex: Int) {
-        val minIndex = if(firstIndex < secIndex) firstIndex else secIndex
-        if(minIndex<0){
-            throw Exception("Bad request")
+        val minIndex = if (firstIndex < secIndex) firstIndex else secIndex
+        if (minIndex < 0) {
+            throw RuntimeException("Bad request- index cannot be negative: $minIndex")
         }
 
-        val maxIndex = if(firstIndex > secIndex) firstIndex else secIndex
+        val maxIndex = if (firstIndex > secIndex) firstIndex else secIndex
 
         var temp = head
         var i = 0
 
-        var prev1:Node? = null
-        while (minIndex !=0 && temp != null ) {
-            if(minIndex==i){
+        var prev1: Node? = null
+        while (minIndex != 0 && temp != null) {
+            if (minIndex == i) {
                 break
             }
             i++
@@ -488,40 +488,104 @@ class Node(private val data: Int) {
             temp = temp.next
         }
 
-        if(minIndex>i){
-            throw Exception("Bad request")
+        if (minIndex > i) {
+            throw RuntimeException("Bad request - minimum index : $minIndex is greater than length of list, please pass within list range")
         }
 
         // this is added here to handle input (length+n,length+m) .. n,m can be any positive number
         // If we are sure that inputs are always proper means within list range then this can be first validation in behavior.
         // As out of range length can be handled in last condition, we are sure at least minIndex is in list range (0..listLength)
-        if(firstIndex == secIndex){
+        if (firstIndex == secIndex) {
             return
         }
 
-        var prev2:Node? = null
-        while (temp != null){
-            if(maxIndex ==i){
+        var prev2: Node? = null
+        while (temp != null) {
+            if (maxIndex == i) {
                 break
             }
             i++
             prev2 = temp
-            temp= temp.next
+            temp = temp.next
         }
 
-        if(maxIndex >i){
-            throw Exception("Bad request")
+        if (maxIndex > i) {
+            throw RuntimeException("Bad request - maximum index : $minIndex is greater than length of list, please pass within list range")
         }
 
-        val first = if(prev1==null) head else prev1.next
+        val first = if (prev1 == null) head else prev1.next
         val second = prev2!!.next
 
-        if(prev1 == null) head= second else prev1.next= second
-        prev2.next= first
+        if (prev1 == null) head = second else prev1.next = second
+        prev2.next = first
 
         val next1 = first!!.next
         first.next = second!!.next
         second.next = next1
     }
+
+    /**
+     * Below method will swap adjusant elements. Need to iterate list once so time complexity: O(n)
+     * Need constant space to store prev, cur and next node info so time complexity is constant.
+     *
+     * There are two basic scenarios:
+     * 1. Even length list
+     *    Input : 10->9->8->7->6->5->4->3->2->1->null
+     *    Output: 9->10->7->8->5->6->3->4->1->2->null
+     * 2. Odd length List
+     *    Input : 9->8->7->6->5->4->3->2->1->null
+     *    Output: 8->9->6->7->4->5->2->3->1->null
+     *
+     *  It is implemented in recursive and iterative way.
+     *  In recursive way, it will fill stack for every recursive function call so recursive is not good option with large list as stack Memory is always less so high chance to get StackOverflow error.
+     */
+    fun pairWiseSwapNode(itr: Boolean = true) {
+        if (itr) {
+            pairWiseSwapIterative()
+        } else {
+            head = pairSwapRec(head)
+        }
+    }
+
+    private fun pairWiseSwapIterative() {
+        var cur = head
+        var prev: Node? = null
+        head = cur!!.next ?: cur
+
+        while (cur != null) {
+            val next = cur.next
+            cur.next = next?.next
+            next?.next = cur
+            prev?.next = next ?: cur
+
+            prev = cur
+            cur = cur.next
+        }
+    }
+
+    private fun pairSwapRec(node: Node?): Node? {
+        if (node?.next == null) {
+            return node
+        }
+
+        val next = node.next
+        node.next = pairSwapRec(next!!.next)
+        next.next = node
+        return next
+    }
+
+    //9->10->7->8->5->6->3->4->1->2->null
+    fun isPairWiseSorted(): Boolean {
+        var cur = head
+
+        while (cur?.next != null) {
+            if (cur.data > cur.next!!.data) {
+                return false
+            }
+            cur = cur.next!!.next
+        }
+        return true
+    }
+
 
 }

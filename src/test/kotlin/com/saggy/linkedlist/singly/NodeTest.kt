@@ -2,6 +2,7 @@ package com.saggy.linkedlist.singly
 
 import com.saggy.linkedlist.singly.factory.SingleLinkedListFactory.Companion.createLinkedList
 import com.saggy.linkedlist.singly.factory.SingleLinkedListFactory.Companion.createLoopLinkedList
+import com.saggy.linkedlist.singly.factory.SingleLinkedListFactory.Companion.createPairWiseSortedLinkedList
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.params.ParameterizedTest
@@ -765,9 +766,9 @@ internal class NodeTest {
         assertEquals("15->$nodeStr", node.print())
 
         // when
-        node.add(5,6)
-        node.add(8,8)
-        node.add(9,8)
+        node.add(5, 6)
+        node.add(8, 8)
+        node.add(9, 8)
         node.add(35)
         node.removeDuplicateInUnSortedList()
 
@@ -783,11 +784,11 @@ internal class NodeTest {
         val length = node.length()
 
         // when
-        node.swapNode(0,1)
+        node.swapNode(0, 1)
 
         // then
         assertEquals(length, node.length())
-        assertEquals("1->2->null",node.print())
+        assertEquals("1->2->null", node.print())
     }
 
     @Test
@@ -797,11 +798,11 @@ internal class NodeTest {
         val length = node.length()
 
         // when
-        node.swapNode(0,0)
+        node.swapNode(0, 0)
 
         // then
         assertEquals(length, node.length())
-        assertEquals("1->null",node.print())
+        assertEquals("1->null", node.print())
     }
 
     @Test
@@ -811,27 +812,27 @@ internal class NodeTest {
         val nodeStr = node.print()
 
         // when
-        node.swapNode(2,2)
+        node.swapNode(2, 2)
 
         // then
-        assertEquals(nodeStr,node.print())
+        assertEquals(nodeStr, node.print())
 
         // when
-        node.swapNode(0,1)
+        node.swapNode(0, 1)
 
         // then
-        assertEquals("4->5->3->2->1->null",node.print())
+        assertEquals("4->5->3->2->1->null", node.print())
 
         // when
-        node.swapNode(3,4)
+        node.swapNode(3, 4)
 
         // then
-        assertEquals("4->5->3->1->2->null",node.print())
+        assertEquals("4->5->3->1->2->null", node.print())
     }
 
 
     @ParameterizedTest
-    @CsvSource("1,10", "10,1", "-1,3","3,-1","10,10")
+    @CsvSource("1,10", "10,1", "-1,3", "3,-1", "10,10")
     fun `swap - should throw Bad request exception for all bad inputs, negatiive scenarios `(
         firstIndex: Int,
         secIndex: Int
@@ -840,11 +841,119 @@ internal class NodeTest {
         val node = createLinkedList(5)
 
         // when
-        val result =assertThrows(Exception::class.java){
+        val result = assertThrows(RuntimeException::class.java) {
             node.swapNode(firstIndex, secIndex)
         }
 
         // then
-        assertEquals("Bad request",result.message)
+        assertTrue(result.message!!.contains("Bad request"))
     }
+
+    @Test
+    internal fun `pairWiseSwap - should return same linked list for single node`() {
+        // given
+        val node = createLinkedList(1)
+        val nodeStr = node.print()
+
+        // when
+        node.pairWiseSwapNode()
+
+        //then
+        assertEquals(nodeStr, node.print())
+    }
+
+    @Test
+    internal fun `pairWiseSwap - should swap for two node list`() {
+        // given
+        val node = createLinkedList(2)
+
+        // when
+        node.pairWiseSwapNode()
+
+        //then
+        assertEquals("1->2->null", node.print())
+    }
+
+    @Test
+    internal fun `pairWiseSwap - should swap even length linked list`() {
+        // given
+        val node = createLinkedList(10)
+
+        // when
+        node.pairWiseSwapNode()
+
+        //then
+        assertEquals("9->10->7->8->5->6->3->4->1->2->null", node.print())
+    }
+
+
+    @Test
+    internal fun `pairWiseSwap - should swap odd length linked list`() {
+        // given
+        val node = createLinkedList(9)
+
+        // when
+        node.pairWiseSwapNode()
+
+        //then
+        assertEquals("8->9->6->7->4->5->2->3->1->null", node.print())
+    }
+
+    @Test
+    internal fun `pairRec - should swap even length linked list`() {
+        // given
+        val node = createLinkedList(10)
+        println(node.print())
+        // when
+        node.pairWiseSwapNode(false)
+
+        //then
+        assertEquals("9->10->7->8->5->6->3->4->1->2->null", node.print())
+    }
+
+    @Test
+    internal fun `pairRec - should swap odd length linked list`() {
+        // given
+        val node = createLinkedList(9)
+        println(node.print())
+        // when
+        node.pairWiseSwapNode(false)
+
+        //then
+        assertEquals("8->9->6->7->4->5->2->3->1->null", node.print())
+    }
+
+    @Test
+    internal fun `isPairWiseSorted - should return true for single node list`() {
+        // given
+        val node = createLinkedList(1)
+
+        // when
+        val isSorted = node.isPairWiseSorted()
+
+        // then
+        assertTrue(isSorted)
+    }
+
+    @ParameterizedTest
+    @CsvSource("1", "2", "9", "10")
+    internal fun `isPairWiseSorted - should return true for pair wise sorted list`(count: Int) {
+        // given
+        val node = createPairWiseSortedLinkedList(count)
+
+        // when & then
+        assertTrue(node.isPairWiseSorted())
+    }
+
+    @ParameterizedTest
+    @CsvSource("2", "3", "9", "10")
+    internal fun `isPairWiseSorted - should return false for not sorted list`(count: Int) {
+        // given
+        val node = createLinkedList(count)
+
+        // when & then
+        assertFalse(node.isPairWiseSorted())
+    }
+
+
 }
