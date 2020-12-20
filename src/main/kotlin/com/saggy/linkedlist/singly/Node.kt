@@ -1,14 +1,33 @@
 package com.saggy.linkedlist.singly
 
+/**
+ * Single linked list implementation with data and reference to next Node.
+ *
+ * All of the operations perform as could be expected for a single-linked
+ * list. Operations that index into the list will traverse the list from
+ * the beginning.
+ *
+ * Many operations are implemented in iterative and recursive manner, default one is always iterative.
+ *
+ * Implementation is done with TDD Test driven development so it will always have 100% test coverage.
+ * In tests, there are few ParameterizedTest to combine most of the positive and negative scenarios together.
+ *
+ * @author Sagar Balai
+ */
 class Node(private val data: Int) {
     var next: Node? = null
     var head: Node? = this
 
     /**
+     * Calculate length of linked list.
+     * ```
      * Time complexity :O(n)
+     * To calculate length, we need to visit each node at most once so time complexity is O(n)
+     * ```
+     * @param isIterative flag indicates whether length is calculated in iterative/recursive manner, default is iterative
      */
-    fun length(itr: Boolean = true): Int {
-        return if (itr) {
+    fun length(isIterative: Boolean = true): Int {
+        return if (isIterative) {
             lengthIterative()
         } else {
             lengthRecursive(head)
@@ -36,9 +55,22 @@ class Node(private val data: Int) {
     }
 
     /**
+     * It will add Node with given `element` value at `atIndex` position, default `atIndex` is 0
+     * so by default add will insert new node at first index.
+     *
      * Time complexity : O(n)
+     * In default behavior, new element is added at first index so time complexity is O(1).
+     * But adding element at specific index may need to travel complete linked list to add element at last index : O(n)
+     *
+     * @param element is data value for new node
+     * @param atIndex is index where new node will be added
+     * @return flag to indicate whether operation is successful
+     * @throws RuntimeException if `atIndex` is negative or greater than length of list.
      */
     fun add(element: Int, atIndex: Int = 0): Boolean {
+        if (atIndex < 0) {
+            throw RuntimeException("Bad request - atIndex can not be negative")
+        }
         if (atIndex == 0) {
             addFirst(element)
         } else {
@@ -48,6 +80,8 @@ class Node(private val data: Int) {
     }
 
     /**
+     * Assumption: `atIndex` is positive number.
+     *
      * Time complexity :O(n)
      */
     private fun addElementAtIndex(element: Int, atIndex: Int) {
@@ -57,13 +91,18 @@ class Node(private val data: Int) {
             node = node.next
             i++
         }
+        if (i < atIndex - 1) {
+            throw RuntimeException("Bad request - `atIndex` is greater than length of list")
+        }
         val temp = node!!.next
         node.next = Node(element)
         node.next!!.next = temp
     }
 
     /**
-     * Time complexity :O(n) -- Iterate complete list to reach end.
+     * Insert element at end of the linked list.
+     *
+     * Time complexity :O(n) -- Iterate complete list to reach end of linked list.
      * This can be improved to O(1) by adding additional pointer (last) to last Node in linked list.
      */
     fun addEnd(element: Int) {
@@ -75,7 +114,10 @@ class Node(private val data: Int) {
     }
 
     /**
+     * Insert element at start of the linked list/ as head in list.
      * Time complexity : O(1)
+     *
+     * @param new node with value as element.
      */
     fun addFirst(element: Int) {
         val temp = Node(element)
@@ -86,6 +128,8 @@ class Node(private val data: Int) {
     }
 
     /**
+     * Delete linked list.
+     *
      * Time complexity : O(n), to make all node available for GC directly
      * Time complexity :O(1) -- make head null and everything available for GC recursively
      */
@@ -102,8 +146,15 @@ class Node(private val data: Int) {
     }
 
     /**
+     * Get node value at given `index`.
+     *
      * Time complexity : O(n)
      * Worst case, need to iterate complete linked list
+     *
+     * @param index of node in linked list
+     * @param itr flag to indicate whether get operation in iterative/ recursive manner, default is iterative.
+     * @return integer value of node at given index
+     * @throws IndexOutOfBoundsException if index is negative or greater than list length.
      */
     fun get(index: Int, itr: Boolean = true): Int {
         if (index < 0) {
@@ -144,7 +195,14 @@ class Node(private val data: Int) {
     }
 
     /**
-     *  Time complexity : O(n)
+     * It will check existence/isPresent of given element `element` in linked list.
+     *
+     * Time complexity : O(n)
+     * Need to travel complete list in worst scenario so need to visit all node at most once.
+     *
+     * @param element is present or not in list
+     * @param itr flag indicates whether exist is performed in iterative/recursive manner, default is iterative.
+     * @return if element is present or not in list
      */
     fun exist(element: Int, itr: Boolean = true): Boolean {
         return if (itr) {
@@ -174,10 +232,16 @@ class Node(private val data: Int) {
     }
 
     /***
-     *   Time complexity : length() is O(n) + get() is O(n)  == O(n)
-     *   but this can be improved with single iteration with another pointer
+     *  It will get Node at given position from last node in linked list.
+     *
+     *  Time complexity : length() is O(n) + get() is O(n)  == O(n)
+     *  but this can be improved with single iteration with another pointer
+     *
+     *  @param position of node in linked list from last node.
+     *  @return return value of node at given position
+     *  @throws IndexOutOfBoundsException if position is out of range
      */
-    fun getFromLastTwoIteration(position: Int): Int {
+    fun getNodeFromEndOfListWithTwoIteration(position: Int): Int {
         val length = length()
         if (position > length) {
             throw IndexOutOfBoundsException("Index $position out of linked list range")
@@ -186,9 +250,19 @@ class Node(private val data: Int) {
     }
 
     /***
-     *   Time complexity :O(n) -- With two pointers, can be found in one iteration
+     *  It will get Node at given position from last node in linked list.
+     *
+     *  Time complexity :O(n) -- With two pointers, can be found in one iteration
+     *
+     *  @param position of node in linked list from last node.
+     *  @return return value of node at given position
+     *  @throws IndexOutOfBoundsException if position is out of range
      */
-    fun getFromLast(position: Int): Int {
+    fun getNodeFromEndOfList(position: Int): Int {
+        if(position <0){
+            throw IndexOutOfBoundsException("position can not be negative")
+        }
+
         var i = 1
         var temp = head
         var nthNode: Node? = null
@@ -210,7 +284,16 @@ class Node(private val data: Int) {
     }
 
     /**
-     * Time complexity : O(n) -- iterate over linked list
+     * It will print complete linked list in string format.
+     *
+     * Time complexity : O(n) -- iterate over linked list.
+     *
+     * @return string representation of linked list.
+     *
+     * ```
+     * eg. String representation of Linked list of size 10
+     *     10->9->8->7->6->5->4->3->2->1->null
+     *```
      */
     fun print(): String {
         val sb = StringBuilder()
@@ -224,9 +307,17 @@ class Node(private val data: Int) {
     }
 
     /**
-     * find middle element using length of linked list.
+     * It will return middle element of linked list, this implementation uses length
+     * so it needs two different iteration, one to get length and another to find actual middle element.
+     *
      * Time complexity : O(n)
      * but it needs two separate iteration one for length and one to find middle O(n)+O(n).
+     *
+     * @return middle element of linked list.
+     * ```
+     *  eg. List = 1->2->3->4->5->6->null , middle is 3
+     *      List = 1->2->3->4->5->null , middle is 3
+     * ```
      */
     fun middleWithTwoIteration(): Int {
         val length = length()
@@ -239,6 +330,18 @@ class Node(private val data: Int) {
         return middle!!.data
     }
 
+    /**
+     * It will return middle element of linked list.
+     *
+     * Time complexity : O(n)
+     * This implementation needs two pointers , one to iterate over list and another needed to keep track of middle element at that time.
+     *
+     * @return middle element of linked list.
+     * ```
+     *  eg. List = 1->2->3->4->5->6->null , middle is 3
+     *      List = 1->2->3->4->5->null , middle is 3
+     * ```
+     */
     fun middle() = middleNode().data
 
     private fun middleNode(node: Node = head!!): Node {
@@ -252,7 +355,18 @@ class Node(private val data: Int) {
         return middle
     }
 
-    fun findOccurance(element: Int): Int {
+    /**
+     * It finds occurrences of given element in list.
+     *
+     * Time complexity: O(n) -- need to iterate complete linked list.
+     *
+     * @param element for which occurences need to find in list
+     * ```
+     * eg. list = 1->2->3->2->2-2->null, findOccurrence(2) will be 4
+     *     list = 1->2->3->null, findOccurrence(4) will be 0
+     * ```
+     */
+    fun findOccurrence(element: Int): Int {
         var count = 0
         var temp = head
 
@@ -266,10 +380,17 @@ class Node(private val data: Int) {
     }
 
     /**
+     * It will find if linked list contains loop or not.
+     *
+     * To find loop in linked list, there are 2 ways
+     * 1. Hashset -- to store Node(hashcode - physical address) and then check is it getting duplicated
+     *    Time complexity O(n) as need single traversal of list but it needs extra space to store node
+     *    so Auxiliary space : O(n)
+     * 2. Two pointers : with one slow and one fast pointer.
+     *    As name indicates Slow pointer will travel list slowly so lets say one node at time and fast pointer will skip two nodes in each iteration,
+     *    If any point both pointer, pointing to same node then there is loop in list else if we get end of list then there is no loop in list.
+     *    We need to iterate list until we get last node so <Strong> Time complexity :O(n) </Strong>
      * This is optimal approach to detect loop in linked list
-     * Time Complexity: O(n)
-     * Other approach is with hashing
-     * Use ```HashSet``` to store Node and then check is it getting duplicated :: Time complexity O(n) as need single traversal but it needs extra space to store node data so Auxiliary space : O(n)
      */
     fun isLoopPresent(): Boolean {
         var loop = false
@@ -290,7 +411,10 @@ class Node(private val data: Int) {
     }
 
     /**
+     * Find length of loop in linked list, in this implementation first we need to find is loop present in list and then length.
+     *
      * Time Complexity: O(n)
+     *
      */
     fun loopLength(): Int {
         var slowPtr = head
@@ -315,6 +439,7 @@ class Node(private val data: Int) {
     }
 
     /**
+     *
      * There are multiple ways to find palindrome in linked list as below
      * 1. Simple solution is two have extra pointer in Node ie prev and then with two nodes (start, last) can be done in O(n)
      * 2. With help of STACK. While iterating till middle element, push to stack and after middle pop and check. Both needs to be same. Can be done in O(n) but need extra space O(n/2)~O(n)
@@ -585,6 +710,44 @@ class Node(private val data: Int) {
             cur = cur.next!!.next
         }
         return true
+    }
+
+    fun moveLastNodeToFirstPosition() {
+        swapNode(0,length()-1)
+        //moveNodeToFirstPosition(length())
+      /*  var secLast = head
+        while (secLast!!.next != null && secLast.next!!.next != null){
+            secLast =secLast.next
+        }
+
+        val last = secLast.next
+        if(last != null){
+            secLast.next = null
+            last.next = head
+            head = last
+        }*/
+    }
+
+    fun moveNodeToFirstPosition(position: Int){
+        swapNode(0,position-1)
+     /*   if(position == 1 || head!!.next ==null){
+            return
+        }
+
+        var i=0
+        var prev = head
+        while (prev!!.next !=null && prev.next!!.next !=null ){
+            if(position-2 ==i){
+                break
+            }
+            prev = prev.next
+            i++
+        }
+        val node = prev.next
+        prev.next = node!!.next
+        node.next = head
+        head = node
+      */
     }
 
 

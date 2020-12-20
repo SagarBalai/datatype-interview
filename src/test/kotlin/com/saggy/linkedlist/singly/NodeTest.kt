@@ -51,6 +51,21 @@ internal class NodeTest {
         assertEquals(2, node.get(0))
     }
 
+    @ParameterizedTest
+    @CsvSource("5,-1", "5,10", "5,6")
+    internal fun `add - should throw Exception with Bad request for bad inputs`(count: Int, atIndex: Int) {
+        // given
+        val node = createLinkedList(count)
+
+        // when
+        val result = assertThrows(RuntimeException::class.java) {
+            node.add(2, atIndex)
+        }
+
+        // then
+        assertTrue(result.message!!.contains("Bad request"))
+    }
+
     @Test
     internal fun `addFirst - should insert element at first position`() {
         // given
@@ -278,12 +293,12 @@ internal class NodeTest {
     }
 
     @Test
-    internal fun `getFromLastTwoIteration - should return second last element when nth node is 2`() {
+    internal fun `getNodeFromEndOfListWithTwoIteration - should return second last element when nth node is 2`() {
         // given
         val node = createLinkedList(20)
 
         // when
-        val elem = node.getFromLastTwoIteration(2)
+        val elem = node.getNodeFromEndOfListWithTwoIteration(2)
 
         // then
         assertEquals(2, elem)
@@ -292,17 +307,17 @@ internal class NodeTest {
         node.add(100)
 
         // then
-        assertEquals(100, node.getFromLastTwoIteration(21))
+        assertEquals(100, node.getNodeFromEndOfListWithTwoIteration(21))
     }
 
     @Test
-    internal fun `getFromLastTwoIteration - should throw IndexOutOfBound when called with index greater than length`() {
+    internal fun `getNodeFromEndOfListWithTwoIteration - should throw IndexOutOfBound when called with index greater than length`() {
         // given
         val node = createLinkedList(20)
         val index = 22
 
         // when
-        val result = assertThrows(IndexOutOfBoundsException::class.java) { node.getFromLastTwoIteration(22) }
+        val result = assertThrows(IndexOutOfBoundsException::class.java) { node.getNodeFromEndOfListWithTwoIteration(22) }
 
         // then
         assertEquals("Index $index out of linked list range", result.message)
@@ -327,12 +342,12 @@ internal class NodeTest {
     }
 
     @Test
-    internal fun `getFromLast - should return second last element when nth node is 2`() {
+    internal fun `getNodeFromEndOfList - should return second last element when nth node is 2`() {
         // given
         val node = createLinkedList(20)
 
         // when
-        val elem = node.getFromLast(2)
+        val elem = node.getNodeFromEndOfList(2)
 
         // then
         assertEquals(2, elem)
@@ -341,16 +356,31 @@ internal class NodeTest {
         node.add(100)
 
         // then
-        assertEquals(100, node.getFromLast(21))
+        assertEquals(100, node.getNodeFromEndOfList(21))
     }
 
+    @ParameterizedTest
+    @CsvSource("10,-1","10,11")
+    internal fun `getNodeFromEndOfList - should throw Bad request exception for bad inputs`(count:Int,position:Int) {
+        // given
+        val node = createLinkedList(count)
+
+        // when & then
+        val result = assertThrows(IndexOutOfBoundsException::class.java){
+            val element = node.getNodeFromEndOfList(position)
+            println(node.print())
+            println("elem : $element")
+        }
+    }
+
+
     @Test
-    internal fun `getFromLast - should return 1 for one node linked list`() {
+    internal fun `getNodeFromEndOfList - should return 1 for one node linked list`() {
         // given
         val node = createLinkedList(1)
 
         // when
-        val elem = node.getFromLast(1)
+        val elem = node.getNodeFromEndOfList(1)
 
         // then
         assertEquals(1, elem)
@@ -408,7 +438,7 @@ internal class NodeTest {
     internal fun `middle - should return middle element for even node linked list`() {
         // given
         val node = createLinkedList(6)
-
+        println(node.print())
         // when
         val middle = node.middle()
 
@@ -422,7 +452,7 @@ internal class NodeTest {
         val node = createLinkedList(10)
 
         // when
-        val count = node.findOccurance(20)
+        val count = node.findOccurrence(20)
 
         // then
         assertEquals(0, count)
@@ -438,7 +468,7 @@ internal class NodeTest {
         node.add(5)
 
         // when
-        val count = node.findOccurance(5)
+        val count = node.findOccurrence(5)
 
         // then
         assertEquals(5, count)
@@ -955,5 +985,35 @@ internal class NodeTest {
         assertFalse(node.isPairWiseSorted())
     }
 
+    @ParameterizedTest
+    @CsvSource("1","2","5","10")
+    internal fun `moveLastNodeToFirstPosition - should work as expected`(count:Int) {
+        // given
+        val node = createLinkedList(count)
+        val lastElem = node.get(node.length()-1)
+        val length = node.length()
 
+        // when
+        node.moveLastNodeToFirstPosition()
+
+        // then
+        assertEquals(lastElem,node.get(0))
+        assertEquals(length, node.length())
+    }
+
+    @ParameterizedTest
+    @CsvSource("10,1","10,2")//,"5","10")
+    internal fun `moveNodeToFirstPosition - should work as expected`(count:Int,position: Int) {
+        // given
+        val node = createLinkedList(count)
+        val lastElem = node.get(position-1)
+        val length = node.length()
+
+        // when
+        node.moveNodeToFirstPosition(position)
+
+        // then
+        assertEquals(lastElem,node.get(0))
+        assertEquals(length, node.length())
+    }
 }
